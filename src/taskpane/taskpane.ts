@@ -19,7 +19,7 @@ export class Logging {
   }
 }
 
-Logging.log("Amro is awesome")
+Logging.log("Amro is awesome hello")
 
 let filters: Filter[] = [];
 let columnTitles: string[] = [];
