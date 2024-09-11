@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Teacherhelper</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f3f3f3;
+            color: #333;
+        }
+        #app-body {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .section {
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            margin-top: 0;
+            color: #0078d4;
+        }
+        select, textarea, button {
+            width: 100%;
+            margin-top: 5px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #005a9e;
+        }
+        #loading {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+<script defer src="polyfill.js"></script><script defer src="taskpane.js"></script></head>
+<body>
+    <div id="loading">Loading...</div>
+    <div id="app-body" style="display:none;">
+        <h1>Teacherhelper</h1>
+
+        <div class="section">
+            <h2>Who should this email be sent to?</h2>
+            <select id="options" title="Select an option">
+                <option value="all">All students</option>
+                <option value="specific">Students with specific attributes</option>
+            </select>
+            <div id="filter-containers"></div>
+            <button id="add-filter" style="display: none;">+ Add filter</button>
+        </div>
+
+        <div class="section">
+            <h2>Which column contains the emails you want to contact?</h2>
+            <select id="email-column" title="Select a column"></select>
+        </div>
+
+        <div class="section">
+            <h2>Write email prompt below:</h2>
+            <textarea id="myTextarea" title="Enter your email prompt" rows="4"></textarea>
+            <button id="generate-draft">Generate Email Draft with Claude</button>
+        </div>
+
+        <div class="section">
+            <h2>Generated Email Draft:</h2>
+            <label for="email-subject">Email Subject:</label>
+            <textarea id="email-subject" title="Generated Email Subject" rows="2"></textarea>
+            <label for="email-body">Email Body:</label>
+            <textarea id="email-body" title="Generated Email Body" rows="6"></textarea>
+        </div>
+
+        <button id="send-emails">Send all emails</button>
+    </div>
+</body>
+</html>

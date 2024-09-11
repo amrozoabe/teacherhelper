@@ -7,14 +7,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const ANTHROPIC_API_KEY = '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';
-const SENDGRID_API_KEY = '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';
-
-sgMail.setApiKey(SENDGRID_API_KEY);
+// const ANTHROPIC_API_KEY = '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';
+// const SENDGRID_API_KEY = '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';
 
 app.post('/api/generate', async (req, res) => {
   console.log('Received request on /api/generate route');
   console.log('Request body:', JSON.stringify(req.body, null, 2));
+
+  const { ANTHROPIC_API_KEY } = req.body;
+
+  if (!ANTHROPIC_API_KEY) {
+    return res.status(400).json({ error: 'Anthropic API key is required' });
+  }
 
   try {
     console.log('Attempting to call Anthropic API...');
@@ -54,27 +58,54 @@ app.post('/api/generate', async (req, res) => {
 app.post('/api/send-emails', async (req, res) => {
   console.log('Received request to send emails');
   try {
-    const { emails } = req.body;
+    const { emails, SENDGRID_API_KEY, sendgridEmail } = req.body;
     console.log('Emails to send:', JSON.stringify(emails, null, 2));
-    
+
     if (!emails || !Array.isArray(emails) || emails.length === 0) {
       console.log('Invalid or empty emails array');
       return res.status(400).json({ error: 'Invalid or empty emails array' });
     }
 
+    if (!SENDGRID_API_KEY || !sendgridEmail) {
+      return res.status(400).json({ error: 'SendGrid API key and email are required' });
+    }
+
+    sgMail.setApiKey(SENDGRID_API_KEY);
+
     const messages = emails.map(email => ({
       to: email.to,
-      from: 'amro.zoabe@outlook.com', // Use your verified sender email
+      from: sendgridEmail,
       subject: email.subject,
       html: email.html,
     }));
 
     console.log('Prepared messages:', JSON.stringify(messages, null, 2));
 
-    const result = await sgMail.send(messages);
-    console.log('SendGrid response:', JSON.stringify(result, null, 2));
+    const sentEmails = [];
+    const failedEmails = [];
+
+    for (const message of messages) {
+      try {
+        console.log(`Attempting to send email to: ${message.to}`);
+        const result = await sgMail.send(message);
+        console.log(`SendGrid response for ${message.to}:`, JSON.stringify(result, null, 2));
+        sentEmails.push(message.to);
+        console.log(`Email sent successfully to ${message.to}`);
+      } catch (error) {
+        console.error(`Error sending email to ${message.to}:`, error);
+        failedEmails.push({ email: message.to, error: error.message });
+      }
+    }
+
+    console.log(`Successfully sent ${sentEmails.length} out of ${emails.length} emails`);
+    console.log('Failed emails:', JSON.stringify(failedEmails, null, 2));
     
-    res.json({ message: "Emails sent successfully" });
+    res.json({ 
+      message: "Emails sending process completed",
+      sentEmails: sentEmails,
+      failedEmails: failedEmails,
+      totalEmails: emails.length
+    });
   } catch (error) {
     console.error('Detailed error:', error);
     if (error.response) {
