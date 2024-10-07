@@ -73,8 +73,8 @@
       </bt:Images>
       <bt:Urls>
         <bt:Url id="GetStarted.LearnMoreUrl" DefaultValue="https://go.microsoft.com/fwlink/?LinkId=276812"/>
-        <bt:Url id="Commands.Url" DefaultValue="https://amrozoabe.github.io/teacherhelper.github.io/commands.html"/>
-        <bt:Url id="Taskpane.Url" DefaultValue="https://amrozoabe.github.io/teacherhelper.github.io/taskpane.html"/>
+        <bt:Url id="Commands.Url" DefaultValue="https://amrozoabe.github.io/teacherhelper.github.io/src/commands/commands.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://amrozoabe.github.io/teacherhelper.github.io/src/taskpane/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
         <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
