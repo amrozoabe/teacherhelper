@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
   workflow_dispatch:
 
 jobs:
@@ -34,17 +36,34 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        token: ${{ secrets.PAT_TOKEN }}
+        fetch-depth: 2
+    - name: Check for changes
+      id: check_changes
+      run: |
+        git diff --name-only HEAD^ HEAD > changes.txt
+        if ! grep -q README.md changes.txt && [ -s changes.txt ]; then
+          echo "changes=true" >> $GITHUB_OUTPUT
+        else
+          echo "changes=false" >> $GITHUB_OUTPUT
+        fi
     - name: Update README
+      if: steps.check_changes.outputs.changes == 'true'
       run: |
         echo "# Teacherhelper" > README.md
         echo "" >> README.md
         echo "Last updated: $(date)" >> README.md
         echo "" >> README.md
         echo "This project was successfully built." >> README.md
+        echo "" >> README.md
+        echo "Changes in this update:" >> README.md
+        git diff --name-only HEAD^ HEAD | grep -v README.md >> README.md
     - name: Commit and push if changed
+      if: steps.check_changes.outputs.changes == 'true'
       run: |
         git config --global user.email "github-actions@example.com"
         git config --global user.name "GitHub Actions"
         git add README.md
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update README" && git push)
+        git commit -m "Update README with latest changes" || echo "No changes to commit"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
