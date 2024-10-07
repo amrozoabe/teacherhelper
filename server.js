@@ -7,9 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// const ANTHROPIC_API_KEY = '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';
-// const SENDGRID_API_KEY = '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';
-
 app.post('/api/generate', async (req, res) => {
   console.log('Received request on /api/generate route');
   console.log('Request body:', JSON.stringify(req.body, null, 2));
