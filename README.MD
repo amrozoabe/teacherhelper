@@ -1,8 +1,7 @@
 ﻿## TEACHER HELPER
 
-Privacy Policy
+## Privacy Policy
 
-Teacherhelper Privacy Policy
 Effective Date: 11/09/2024
 
 1. Introduction
